@@ -17,7 +17,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class SingleSubActivity extends ActionBarActivity {
 
@@ -26,7 +25,6 @@ public class SingleSubActivity extends ActionBarActivity {
 	TextView topic;
 	ImageButton inviteBtn;
 	Myadapter adapter;
-	private ImageButton backBtn, freshBtn;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,29 +34,12 @@ public class SingleSubActivity extends ActionBarActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);// 没有标题栏
 		setContentView(R.layout.activity_single_sub);
 		
-		playerlist = (ListView) findViewById(R.id.listViewSingleSub);
+		playerlist = (ListView) findViewById(R.id.listView1);
 		inflater = LayoutInflater.from(this);
 		
 		adapter = new Myadapter();
 		playerlist.setAdapter(adapter);
 		//adapter.notifyDataSetChanged();
-		freshBtn = (ImageButton) findViewById(R.id.fresh);
-		backBtn = (ImageButton) findViewById(R.id.back);
-	
-	
-	backBtn.setOnClickListener(new OnClickListener() {
-
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
-			//isToNextAct = true;
-			Intent intent = new Intent();
-			intent.setClass(SingleSubActivity.this, SingleMainActivity.class);
-			startActivity(intent);
-			Toast.makeText(SingleSubActivity.this, "返回到游戏大厅  ! !", 1).show();
-			finish();
-		}
-	});
 	}
 
 	@Override

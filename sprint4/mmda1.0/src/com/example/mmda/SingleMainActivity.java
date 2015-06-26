@@ -10,13 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 public class SingleMainActivity extends ActionBarActivity {
 
-	private ImageButton backBtn, freshBtn;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,23 +20,6 @@ public class SingleMainActivity extends ActionBarActivity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);// 全屏
 		requestWindowFeature(Window.FEATURE_NO_TITLE);// 没有标题栏
 		setContentView(R.layout.activity_single_main);
-		freshBtn = (ImageButton) findViewById(R.id.fresh);
-		backBtn = (ImageButton) findViewById(R.id.back);
-	
-	
-	backBtn.setOnClickListener(new OnClickListener() {
-
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
-			//isToNextAct = true;
-			Intent intent = new Intent();
-			intent.setClass(SingleMainActivity.this, LoginActivity.class);
-			startActivity(intent);
-			Toast.makeText(SingleMainActivity.this, "返回到游戏大厅  ! !", 1).show();
-			finish();
-		}
-	});
 	}
 
 	@Override

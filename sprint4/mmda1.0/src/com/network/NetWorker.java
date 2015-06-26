@@ -1,4 +1,4 @@
-package com.network;
+ï»¿package com.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,18 +15,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.string;
 import android.os.Message;
 import android.util.Log;
 
-import com.example.mmda.BaseActivity;
 import com.until.Config;
 import com.until.Constant;
 
 public class NetWorker extends Thread {
 	// Context context;
-	String tag = "ÌáÊ¾~~";
-	private static final String IP = "172.24.30.76";
-	private static final int PORT = 8898;
+	String tag = "æç¤º~~";
+	private static final String IP = "192.168.253.1";
+	private static final int PORT = 8800;
 
 	private Socket socket = null;
 	private PrintWriter out = null;
@@ -68,8 +68,8 @@ public class NetWorker extends Thread {
 		try {
 			System.out.println("ganma ne ");
 			socket = new Socket(IP, PORT);
-			Log.i(tag, "Á¬½Óµ½·şÎñÆ÷À²");
-			System.out.println("Á¬½Óµ½·şÎñÆ÷À²£¡");
+			Log.i(tag, "è¿æ¥åˆ°æœåŠ¡å™¨å•¦");
+			System.out.println("è¿æ¥åˆ°æœåŠ¡å™¨å•¦ï¼");
 			state = running;
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(
@@ -85,12 +85,12 @@ public class NetWorker extends Thread {
 	}
 
 	private void receiveMsg() {
-		Log.i(tag, "Ò»Ö±ÔÚµÈ´ı½ÓÊÜ·şÎñÆ÷·µ»ØµÄĞÅÏ¢£¡");
-		System.out.println("Ò»Ö±ÔÚµÈ´ı½ÓÊÜ·şÎñÆ÷·µ»ØµÄĞÅÏ¢£¡");
+		Log.i(tag, "ä¸€ç›´åœ¨ç­‰å¾…æ¥å—æœåŠ¡å™¨è¿”å›çš„ä¿¡æ¯ï¼");
+		System.out.println("ä¸€ç›´åœ¨ç­‰å¾…æ¥å—æœåŠ¡å™¨è¿”å›çš„ä¿¡æ¯ï¼");
 		try {
 			String msg = in.readLine();
-			Log.i(tag, "´Ó·şÎñÆ÷·µ»ØµÄÏûÏ¢ÊÇ£º" + msg);
-			System.out.println("´Ó·şÎñÆ÷·µ»ØµÄÏûÏ¢ÊÇ£º" + msg);
+			Log.i(tag, "ä»æœåŠ¡å™¨è¿”å›çš„æ¶ˆæ¯æ˜¯ï¼š" + msg);
+			System.out.println("ä»æœåŠ¡å™¨è¿”å›çš„æ¶ˆæ¯æ˜¯ï¼š" + msg);
 			jsonObject = new JSONObject(msg);
 			dataType = jsonObject.getInt("requestType");
 
@@ -101,84 +101,135 @@ public class NetWorker extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// µÇÂ¼
+		// ç™»å½•
 		if (dataType == Config.REQUEST_LOGIN) {
 			handLogin();
 
 		}
-		// ¿ìËÙµÇÂ¼
+		// å¿«é€Ÿç™»å½•
 		else if (dataType == Config.REQUEST_QUICK_LOGIN) {
 			handregisterq();
 		}
-		// ×¢²á
+		// æ³¨å†Œ
 		else if (dataType == Config.REQUEST_REGISTER) {
 			handRegister();
 		}
-		// ÍË³ö
+		// é€€å‡º
 		else if (dataType == Config.REQUEST_EXIT) {
 			Message msg = new Message();
 			int num = 7;
 			msg.what = num;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		}
-		// »ñÈ¡µÀ¾ßÉÌ³Ç
+		// è·å–é“å…·å•†åŸ
 		else if (dataType == Config.REQUEST_GET_PROP) {
 			handGetshop();
 		}
-		// »ñÈ¡µÀ¾ßĞŞ¸Ä
+		// è·å–é“å…·ä¿®æ”¹
 		else if (dataType == Config.REQUEST_MODIFY_PROP) {
 			handChangshop();
 		}
-
-		// ÅĞ¶Ï»ñÈ¡ÔÚÏßÍæ¼Ò
+		//ä¿®æ”¹æ—¶é—´
+		else if (dataType == Config.REQUEST_MODIFY_TIME) {
+			handChangtime();
+		}
+		
+		// åˆ¤æ–­è·å–åœ¨çº¿ç©å®¶
 		else if (dataType == Config.REQUEST_GET_USERS_ONLINE) {
 			handPlayerList();
 		}
-		// ÅĞ¶ÏÀàĞÍÎª»ñÈ¡ºÃÓÑ£¬ÔÚ½øĞĞ´¦Àí
+		// åˆ¤æ–­ç±»å‹ä¸ºè·å–å¥½å‹ï¼Œåœ¨è¿›è¡Œå¤„ç†
 		else if (dataType == Config.REQUEST_ADD_FRIEND) {
 			handAddFriend();
 
 		}
-		//ÅĞ¶ÏÀàĞÍÊÇ·ñÎªÑûÕ½ÇëÇó
+		else if(dataType == Config.REQUEST_DEL_FRIEND){
+			handDeleteFriend();
+			//åˆ é™¤å¥½å‹
+		}
+		//åˆ¤æ–­ç±»å‹æ˜¯å¦ä¸ºé‚€æˆ˜è¯·æ±‚
 		else if(dataType == Config.REQUEST_SEND_INVITE){
 			
 			handYaoZhan();
 		}
-		//ÅĞ¶Ï¶Ô·½·ñ½ÓÊÕÇëÇó
+		//åˆ¤æ–­å¯¹æ–¹å¦æ¥æ”¶è¯·æ±‚
 		else if(dataType == Config.REQUEST_INVITE_RESULT){
 			
 			handInviteResult();
 		}
-		// ÅĞ¶Ï»ñÈ¡ºÃÓÑÁĞ±í
+		// åˆ¤æ–­è·å–å¥½å‹åˆ—è¡¨
 		else if (dataType == Config.REQUEST_GET_FRIEND) {
 			handFriendList();
 		}
-		//»ñÈ¡³ÉÓï
-		else if(dataType ==  Config.REQUEST_GET_QUESTION){
-			handGetQuestion();
+		//è·å–æˆè¯­
+		else if(dataType ==  Config.REQUEST_GET_CHENGYU){
+			handGetChengYu();
 		}
-		//»ñÈ¡ºÃÓÑµÄ»ı·Ö
+		//è·å–å¥½å‹çš„ç§¯åˆ†
 		else if(dataType ==Config.REQUEST_ADD_PLAYERSCORE){
 			handAddPlayerScore();
 		}
-		//»ñÈ¡»ı·Ö
+		//è·å–ç§¯åˆ†
 		else if(dataType == Config.REQUEST_GET_SCORES){
 			handGetSocre();
 		}
-		//»ñÈ¡PK½á¹û
+		//è·å–PKç»“æœ
 		else if(dataType == Config.REQUEST_PK_RESULT){
 			handPKResult();
 		}
-		//·µ»ØÓÎÏ·ÖĞÍË³öÓÎÏ·µÄÇëÇó
+		//è¿”å›å……å€¼çš„è¯·æ±‚
+		else if(dataType == Config.REQUEST_MODIFY_MONEY){
+			handAddMoney();
+		}
+		//è¿”å›æ¸¸æˆä¸­é€€å‡ºæ¸¸æˆçš„è¯·æ±‚
 		else if(dataType == Config.REQUEST_EXIT_GAME){
 			handExitGameActivity();
+		}else if(dataType == Config.REQUEST_MODIFY_INFO){
+		    handModifyInfo();	
 		}
 	}
 
-	// µÇÂ¼
+	//å¤„ç†æ›´æ”¹æ—¶é—´
+	private void handChangtime() {
+		// TODO Auto-generated method stub
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~æ›´æ”¹æ—¶é—´~çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~æ›´æ”¹æ—¶é—´~çš„è¯·æ±‚");
+		try {
+			int stime = jsonObject.getInt("stime");
+			Message msg = new Message();
+			msg.arg1 = stime;
+			msg.what = Config.REQUEST_MODIFY_TIME;
+			////BaseActivity.sendMessage(msg);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	//æ›´æ”¹æ—¶é—´
+	public void changtime(int stime) {
+		// TODO Auto-generated method stub
+		Log.i(tag, "å‘é€æ›´æ”¹æ—¶é—´çš„è¯·æ±‚");
+		System.out.println("å‘é€æ›´æ”¹æ—¶é—´çš„è¯·æ±‚");
+
+		JSONObject jo = new JSONObject();
+		try {
+			jo.put("username", Constant.userName);
+			jo.put("stime", stime);
+			jo.put("requestType", Config.REQUEST_MODIFY_TIME);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		out.println(jo.toString());
+		Log.i(tag, "å‘é€æ›´æ”¹æ—¶é—´çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
+		System.out.println("å‘é€æ›´æ”¹æ—¶é—´çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
+	}
+	
+	// ç™»å½•
 	public void login(String userName, String password) {
 
-		System.out.println("·¢ËÍµÇÂ¼µÄÇëÇóddd");
+		System.out.println("å‘é€ç™»å½•çš„è¯·æ±‚ddd");
 		// JSOn
 		JSONObject jo = new JSONObject();
 		try {
@@ -189,32 +240,33 @@ public class NetWorker extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.i(tag, "·¢ËÍµÇÂ¼µÄÇëÇóÎª£º" + jo.toString());
+		Log.i(tag, "å‘é€ç™»å½•çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
 
 		out.println(jo.toString());
 	}
 
-	// ´«µİµÇÂ¼
+	// ä¼ é€’ç™»å½•
 	public void handLogin() {
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄµÇÂ¼µÄÇëÇó");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄµÇÂ¼µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„ç™»å½•çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„ç™»å½•çš„è¯·æ±‚");
 		int result = 0;
 		try {
 			result = jsonObject.getInt("result");
+			Constant.touxiang = jsonObject.getInt("head");
 			Message msg = new Message();
 			msg.arg1 = result;
 			msg.what = Config.REQUEST_LOGIN;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	// ¿ìËÙµÇÂ¼
+	// å¿«é€Ÿç™»å½•
 	public void registerq() {
 
-		System.out.println("·¢ËÍ--¿ìËÙµÇÂ¼--µÄÇëÇó");
+		System.out.println("å‘é€--å¿«é€Ÿç™»å½•--çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("requestType", Config.REQUEST_QUICK_LOGIN);
@@ -222,14 +274,14 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍ¿ìËÙµÇÂ¼ÇëÇóÎª£º" + jo.toString());
+		Log.i(tag, "å‘é€å¿«é€Ÿç™»å½•è¯·æ±‚ä¸ºï¼š" + jo.toString());
 
 	}
 
-	// ´«µİ¿ìËÙµÇÂ¼
+	// ä¼ é€’å¿«é€Ÿç™»å½•
 	private void handregisterq() {
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ¿ìËÙµÇÂ¼µÄÇëÇó");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ¿ìËÙµÇÂ¼µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„å¿«é€Ÿç™»å½•çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„å¿«é€Ÿç™»å½•çš„è¯·æ±‚");
 
 		try {
 			// int result = jsonObject.getInt("result");
@@ -240,7 +292,7 @@ public class NetWorker extends Thread {
 					+ Constant.userPassword);
 			Message msg = new Message();
 			msg.what = Config.REQUEST_QUICK_LOGIN;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 			// } else if(result == Config.FAIl){
 			// registerq();
 			// }
@@ -251,45 +303,46 @@ public class NetWorker extends Thread {
 		}
 	}
 
-	// ×¢²á
-	public void register(String userName, String password) {
-		Log.i(tag, "·¢ËÍ×¢²áµÄÇëÇódd");
-		System.out.println("·¢ËÍ×¢²áµÄÇëÇódd");
+	// æ³¨å†Œ
+	public void register(String userName, String password, int headID) {
+		Log.i(tag, "å‘é€æ³¨å†Œçš„è¯·æ±‚dd");
+		System.out.println("å‘é€æ³¨å†Œçš„è¯·æ±‚dd");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("requestType", Config.REQUEST_REGISTER);
 			jo.put("username", userName);
 			jo.put("password", password);
+			jo.put("head",headID);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍ×¢²áµÄÇëÇóÎª£º" + jo.toString());
-		System.out.println("·¢ËÍ×¢²áµÄÇëÇóÎª£º" + jo.toString());
+		Log.i(tag, "å‘é€æ³¨å†Œçš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
+		System.out.println("å‘é€æ³¨å†Œçš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
 	}
 
-	// ´«µİ×¢²á
+	// ä¼ é€’æ³¨å†Œ
 	private void handRegister() {
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~×¢²á~µÄÇëÇó");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~×¢²á~µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~æ³¨å†Œ~çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~æ³¨å†Œ~çš„è¯·æ±‚");
 		int result = 0;
 		try {
 			result = jsonObject.getInt("result");
 			Message msg = new Message();
 			msg.arg1 = result;
 			msg.what = Config.REQUEST_REGISTER;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	// ÍË³öÓÎÏ·
+	// é€€å‡ºæ¸¸æˆ
 	public void exitGame() {
-		Log.i(tag, "·¢ËÍÍË³öÓÎÏ·µÄÇëÇó");
-		System.out.println("·¢ËÍÍË³öÓÎÏ·µÄÇëÇó");
+		Log.i(tag, "å‘é€é€€å‡ºæ¸¸æˆçš„è¯·æ±‚");
+		System.out.println("å‘é€é€€å‡ºæ¸¸æˆçš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("username", Constant.userName);
@@ -299,14 +352,14 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍÍË³öÓÎÏ·µÄÇëÇóÎª£º" + jo.toString());
-		System.out.println("·¢ËÍÍË³öÓÎÏ·µÄÇëÇóÎª£º" + jo.toString());
+		Log.i(tag, "å‘é€é€€å‡ºæ¸¸æˆçš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
+		System.out.println("å‘é€é€€å‡ºæ¸¸æˆçš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
 	}
 
-	// ÉÌÆ·µÄ¹ºÂò
+	// å•†å“çš„è´­ä¹°
 	public void getshop(String username) {
-		Log.i(tag, "·¢ËÍ»ñÈ¡µÀ¾ßµÄÇëÇó");
-		System.out.println("·¢ËÍ»ñÈ¡µÀ¾ßµÄÇëÇó");
+		Log.i(tag, "å‘é€è·å–é“å…·çš„è¯·æ±‚");
+		System.out.println("å‘é€è·å–é“å…·çš„è¯·æ±‚");
 
 		JSONObject jo = new JSONObject();
 		try {
@@ -317,42 +370,40 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍ»ñÈ¡µÀ¾ßµÄÇëÇóÎª£º" + jo.toString());
-		System.out.println("·¢ËÍ»ñÈ¡µÀ¾ßµÄÇëÇóÎª£º" + jo.toString());
+		Log.i(tag, "å‘é€è·å–é“å…·çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
+		System.out.println("å‘é€è·å–é“å…·çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
 	}
 
-	// ÉÌ³ÇÏß³Ì´¦Àí
+	// å•†åŸçº¿ç¨‹å¤„ç†
 	public void handGetshop() {
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~»ñÈ¡µÀ¾ß~µÄÇëÇó");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~»ñÈ¡µÀ¾ß~µÄÇëÇó");
-		
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~è·å–é“å…·~çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~è·å–é“å…·~çš„è¯·æ±‚");
 		try {
-			int xmd = jsonObject.getInt("tip");
-			int tsk = jsonObject.getInt("heart");
-			//Log.i(tag, "~~~~~~~~~~~~~~~~heart"+String.valueOf(tsk));
+			int xmd = jsonObject.getInt("deng");
+			int tsk = jsonObject.getInt("ka");
 			int score = jsonObject.getInt("score");
-			// Constant.playerTskNum = tsk;
-			// Constant.playerXmdNum = xmd;
+			int money = jsonObject.getInt("money");
+			int stime = jsonObject.getInt("stime");
+			//Constant.playerXmdNum = xmd;
+			//Constant.playerTskNum = tsk;
 			Message msg = new Message();
-			msg.arg1 = tsk;
-			msg.arg2 = xmd;
-			Log.i(tag, "~~~~~~~~~~~~~~~~tip"+msg.arg1);
-			Log.i(tag, "~~~~~~~~~~~~~~~~heart"+msg.arg2);
-			Constant.playerXmdNum = msg.arg2;
-			Constant.playerTskNum = msg.arg1;
+			Constant.playerXmdNum = xmd;
+			Constant.playerTskNum = tsk;
 			Constant.score = score;
+			Constant.Money = money;
+			Constant.stime = stime;
 			msg.what = Config.REQUEST_GET_PROP;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	// µÀ¾ßµÄÇëÇó
+	// é“å…·çš„è¯·æ±‚
 	public void changshop(String prpoName, int num) {
-		Log.i(tag, "·¢ËÍ¸ü¸ÄµÀ¾ßµÄÇëÇó");
-		System.out.println("·¢ËÍ¸ü¸ÄµÀ¾ßµÄÇëÇó");
+		Log.i(tag, "å‘é€æ›´æ”¹é“å…·çš„è¯·æ±‚");
+		System.out.println("å‘é€æ›´æ”¹é“å…·çš„è¯·æ±‚");
 
 		JSONObject jo = new JSONObject();
 		try {
@@ -365,20 +416,20 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍ¸ü¸ÄµÀ¾ßµÄÇëÇóÎª£º" + jo.toString());
-		System.out.println("·¢ËÍ¸ü¸ÄµÀ¾ßµÄÇëÇóÎª£º" + jo.toString());
+		Log.i(tag, "å‘é€æ›´æ”¹é“å…·çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
+		System.out.println("å‘é€æ›´æ”¹é“å…·çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
 	}
 
-	// ÉÌ³ÇµÀ¾ßÏß³Ì´¦Àí
+	// å•†åŸé“å…·çº¿ç¨‹å¤„ç†
 	public void handChangshop() {
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~¸ü¸ÄµÀ¾ß~µÄÇëÇó");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~¸ü¸ÄµÀ¾ß~µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~æ›´æ”¹é“å…·~çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~æ›´æ”¹é“å…·~çš„è¯·æ±‚");
 		try {
 			int result = jsonObject.getInt("result");
 			Message msg = new Message();
 			msg.arg1 = result;
 			msg.what = Config.REQUEST_MODIFY_PROP;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -386,9 +437,9 @@ public class NetWorker extends Thread {
 
 	}
 
-	// ·¢ËÍ»ñÈ¡Íæ¼ÒÇëÇó
+	// å‘é€è·å–ç©å®¶è¯·æ±‚
 	public void getPlayerList() {
-		System.out.println("·¢ËÍ»ñÈ¡ÔÚÏßÍæ¼ÒµÄÇëÇó");
+		System.out.println("å‘é€è·å–åœ¨çº¿ç©å®¶çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("username", Constant.userName);
@@ -399,13 +450,12 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍ»ñÈ¡ÔÚÏßÍæ¼ÒµÄÇëÇóÎª£º" + jo.toString());
+		Log.i(tag, "å‘é€è·å–åœ¨çº¿ç©å®¶çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
 	}
-	
-	// Ïß³Ì´¦ÀíÔÚÏßÍæ¼Ò
+	// çº¿ç¨‹å¤„ç†åœ¨çº¿ç©å®¶
 	public void handPlayerList() {
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~»ñÈ¡ÔÚÏßÍæ¼Ò~");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~»ñÈ¡ÔÚÏßÍæ¼Ò");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~è·å–åœ¨çº¿ç©å®¶~");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~è·å–åœ¨çº¿ç©å®¶");
 		try {
 			JSONArray ja = jsonObject.getJSONArray("list");
 			System.out.println(ja.toString());
@@ -416,6 +466,7 @@ public class NetWorker extends Thread {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("score", ja.getJSONObject(i).optInt("score"));
 					map.put("username",ja.getJSONObject(i).optString("username"));
+					map.put("stime",ja.getJSONObject(i).optInt("stime"));
 					list.add(map);
 					System.out.println(list);
 				}
@@ -423,7 +474,7 @@ public class NetWorker extends Thread {
 			Message msg = new Message();
 			msg.obj = list;
 			msg.what = Config.REQUEST_GET_USERS_ONLINE;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 
 			e.printStackTrace();
@@ -431,67 +482,67 @@ public class NetWorker extends Thread {
 	
 	}
 
-	// Ïò·şÎñÆ÷·¢ËÍÌí¼ÓºÃÓÑÇëÇó
+	// å‘æœåŠ¡å™¨å‘é€æ·»åŠ å¥½å‹è¯·æ±‚
 	public void addFriend(String friendname) {
 		
-		System.out.println("·¢ËÍÌí¼ÓºÃÓÑµÄÇëÇó");
+		System.out.println("å‘é€æ·»åŠ å¥½å‹çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			/*jo.put("selfName", Constant.userName);
 			jo.put("friendName", friendname);
 			jo.put("requestType", Config.REQUEST_ADD_FRIEND);*/
-			jo.put(Config.USERNAME, Constant.userName);
+			jo.put("username", Constant.userName);
 			jo.put("playername", friendname);
 			jo.put(Config.REQUEST_TYPE, Config.REQUEST_ADD_FRIEND);
 			out.println(jo.toString());
-			System.out.println("Ìí¼ÓºÃÓÑµÄÇëÇóÎª£º"+jo.toString());
+			System.out.println("æ·»åŠ å¥½å‹çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
 			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//out.println(jo.toString());
-		Log.i(tag, "·¢ËÍÌí¼ÓºÃÓÑµÄÇëÇóÎª£º"+jo.toString());
-		System.out.println("·¢ËÍÌí¼ÓºÃÓÑµÄÇëÇóÎª£º"+jo.toString());
+		Log.i(tag, "å‘é€æ·»åŠ å¥½å‹çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+		System.out.println("å‘é€æ·»åŠ å¥½å‹çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
 	}
 
-	// ´¦Àí·şÎñÆ÷·µ»ØºÃÓÑ
+	// å¤„ç†æœåŠ¡å™¨è¿”å›å¥½å‹
 	private void handAddFriend() {
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~Ìí¼ÓºÃÓÑÁĞ±í~µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~æ·»åŠ å¥½å‹åˆ—è¡¨~çš„è¯·æ±‚");
 		
 		Message msg = new Message();
 		try {
 			msg.arg1=jsonObject.getInt("result");
 			msg.what=Config.REQUEST_ADD_FRIEND;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	// Ïò·şÎñÆ÷·¢ËÍ»ñÈ¡ºÃÓÑÇëÇó
+	// å‘æœåŠ¡å™¨å‘é€è·å–å¥½å‹è¯·æ±‚
 	public void getFriendList() {
 		
-		System.out.println("·¢ËÍºÃÓÑÁĞ±íµÄÇëÇó");
+		System.out.println("å‘é€å¥½å‹åˆ—è¡¨çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("username", Constant.userName);
 			jo.put("requestType", Config.REQUEST_GET_FRIEND);
-			System.out.println("·¢ËÍ»ñÈ¡ºÃÓÑÁĞ±íµÄÇëÇóÎª£º"+jo.toString());
+			System.out.println("å‘é€è·å–å¥½å‹åˆ—è¡¨çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍºÃÓÑÁĞ±íµÄÇëÇóÎª£º"+jo.toString());
+		Log.i(tag, "å‘é€å¥½å‹åˆ—è¡¨çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
 		
 	}
 
-	// ´¦Àí·şÎñÆ÷ºÃÓÑÁĞ±í
+	// å¤„ç†æœåŠ¡å™¨å¥½å‹åˆ—è¡¨
 	private void handFriendList() {
 
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~»ñÈ¡ºÃÓÑÁĞ±í~µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~è·å–å¥½å‹åˆ—è¡¨~çš„è¯·æ±‚");
 		JSONArray ja;
 		List<Map<String,Object>> list= new ArrayList<Map<String,Object>>();
 		try {
@@ -501,6 +552,7 @@ public class NetWorker extends Thread {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("score", ja.getJSONObject(i).getInt("score"));
 				map.put("friendName", ja.getJSONObject(i).getString("friendName"));
+				map.put("stime",ja.getJSONObject(i).optInt("stime"));
 				list.add(map);
 			}
 		
@@ -511,12 +563,12 @@ public class NetWorker extends Thread {
 		Message msg = new Message();
 		msg.obj = list;
 		msg.what=Config.REQUEST_GET_FRIEND;
-	    BaseActivity.sendMessage(msg);
-	}
+	    ////BaseActivity.sendMessage(msg);
 	
-    //Ïò·şÎñÆ÷·¢ËÍÑûÇëÍæ¼ÒÌôÕ½ÇëÇó
+	}
+    //å‘æœåŠ¡å™¨å‘é€é‚€è¯·ç©å®¶æŒ‘æˆ˜è¯·æ±‚
 	public void yaoZhan(String playerName, String userName, int model) {
-		Log.i(tag, "·¢ËÍÑûÕ½µÄÇëÇó");
+		Log.i(tag, "å‘é€é‚€æˆ˜çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("playername", playerName);
@@ -528,30 +580,30 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍÑûÕ½µÄÇëÇóÎª£º"+jo.toString());
+		Log.i(tag, "å‘é€é‚€æˆ˜çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+		
 	}
 	
-	//·şÎñÆ÷·µ»ØÑûÕ½µÄÇëÇó
+	//æœåŠ¡å™¨è¿”å›é‚€æˆ˜çš„è¯·æ±‚
 	public void handYaoZhan(){
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~ÑûÕ½~µÄÇëÇó");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~ÑûÕ½~µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~é‚€æˆ˜~çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~é‚€æˆ˜~çš„è¯·æ±‚");
 		Message msg = new Message();
 		try {
 			msg.arg1=jsonObject.getInt("model");
 			msg.obj=jsonObject.getString("username");
 			msg.what=Config.REQUEST_SEND_INVITE;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	//Ïò·şÎñÆ÷·¢ËÍÊÇ·ñ½ÓÊÜÇëÇóĞÅÏ¢
+	//å‘æœåŠ¡å™¨å‘é€æ˜¯å¦æ¥å—è¯·æ±‚ä¿¡æ¯
 	public void inviteResult(String playername, int result) {
 
-		Log.i(tag, "·¢ËÍÊÇ·ñ½ÓÊÜÑûÇëµÄÇëÇó");
-		System.out.println("·¢ËÍÊÇ·ñ½ÓÊÜÑûÇëµÄÇëÇó");
+		Log.i(tag, "å‘é€æ˜¯å¦æ¥å—é‚€è¯·çš„è¯·æ±‚");
+		System.out.println("å‘é€æ˜¯å¦æ¥å—é‚€è¯·çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("playername", playername);
@@ -562,80 +614,102 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍÊÇ·ñ½ÓÊÜÑûÇëµÄÇëÇóÎª£º"+jo.toString());
-		System.out.println("·¢ËÍÊÇ·ñ½ÓÊÜÑûÇëµÄÇëÇóÎª£º"+jo.toString());	
+		Log.i(tag, "å‘é€æ˜¯å¦æ¥å—é‚€è¯·çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+		System.out.println("å‘é€æ˜¯å¦æ¥å—é‚€è¯·çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());	
 	}
 	
-	//·şÎñÆ÷·µ»ØÊÇ·ñ½ÓÊÕÇëÇó
+	//æœåŠ¡å™¨è¿”å›æ˜¯å¦æ¥æ”¶è¯·æ±‚
 	public void handInviteResult(){
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~~ÊÇ·ñ½ÓÊÜÑûÇë");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~ÊÇ·ñ½ÓÊÜÑûÇë~µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~~æ˜¯å¦æ¥å—é‚€è¯·");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~æ˜¯å¦æ¥å—é‚€è¯·~çš„è¯·æ±‚");
 		
 		Message msg = new Message();
 		try {
 			msg.arg1=jsonObject.getInt("result");
 			msg.what=Config.REQUEST_INVITE_RESULT;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-	//Ïò·şÎñÆ÷·¢ËÍ³ÉÓïÇëÇó
-	public void getQuestion(int typeMain,int typeSub) {
-		System.out.println("·¢ËÍ»ñÈ¡µÄÇëÇó");
+	//å‘æœåŠ¡å™¨å‘é€æˆè¯­è¯·æ±‚
+	public void getChengYu(int num,int level) {
+		System.out.println("å‘é€è·å–æˆè¯­çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
-			jo.put("requestType", Config.REQUEST_GET_QUESTION);
-			jo.put("typeMain", typeMain);
-			jo.put("typeSub", typeSub);
+			jo.put("requestType", Config.REQUEST_GET_CHENGYU);
+			jo.put("num", num);
+			jo.put("level", level);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍ»ñÈ¡ÌâÄ¿µÄÇëÇóÎª£º"+jo.toString());
+		Log.i(tag, "å‘é€è·å–æˆè¯­çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
 	
 	}
-	
-	//·şÎñÆ÷´«µİ³ÉÓïµÄÇëÇó
-	public void handGetQuestion(){
+	//æœåŠ¡å™¨ä¼ é€’æˆè¯­çš„è¯·æ±‚
+	public void handGetChengYu(){
 		
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~»ñÈ¡ÌâÄ¿ÁĞ±í~µÄÇëÇó");
-		JSONArray ja;
-		List<Map<String,Object>> list1= new ArrayList<Map<String,Object>>();
+		System.out.println("ä¼ é€’è·å–æˆè¯­çš„è¯·æ±‚");
+		Message msg = new Message();
 		try {
-			ja = jsonObject.optJSONArray("list1");
-			System.out.println("11"+ja.toString());
-			int i=0;
-			for(; i<ja.length();){
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("question", ja.getJSONObject(i).get("question"));
-				map.put("answer1", ja.getJSONObject(i).get("answer1"));
-				map.put("answer2", ja.getJSONObject(i).get("answer2"));
-				map.put("answer3", ja.getJSONObject(i).get("answer3"));
-				map.put("answer4", ja.getJSONObject(i).get("answer4"));
-				map.put("right", ja.getJSONObject(i).get("right"));
-				//map.put("friendName", ja.getJSONObject(i).getString("friendName"));
-				list1.add(map);
-				i=i+1;
-			}
-		
-		  } catch (JSONException e) {
+			JSONArray ja = jsonObject.getJSONArray("chengyus");
+			msg.obj=ja;
+			msg.what = Config.REQUEST_GET_CHENGYU;
+			////BaseActivity.sendMessage(msg);
+			
+		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			}
-		System.out.println("12"+list1.toString());
-		Message msg = new Message();
-		msg.obj = list1;
-		msg.what=Config.REQUEST_GET_QUESTION;
-	    BaseActivity.sendMessage(msg);
+		}
+		
+		
 	}
 	
-	//·¢ËÍÍæ¼Ò»ı·ÖÇëÇó
+	//å‘æœåŠ¡å™¨å‘é€å……å€¼è¯·æ±‚
+	public void addMoney(String userName, int money) {
+		// TODO Auto-generated method stub
+		Log.i(tag, "å‘é€å……å€¼çš„è¯·æ±‚");
+		System.out.println("å‘é€å……å€¼çš„è¯·æ±‚");
+
+		JSONObject jo = new JSONObject();
+		try {
+			jo.put("username", Constant.userName);
+			jo.put("money", money);
+			jo.put("requestType", Config.REQUEST_MODIFY_MONEY);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		out.println(jo.toString());
+		Log.i(tag, "å‘é€å……å€¼çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
+		System.out.println("å‘é€å……å€¼çš„è¯·æ±‚ä¸ºï¼š" + jo.toString());
+	}
+	
+	//å……å€¼çº¿ç¨‹å¤„ç†
+	public void handAddMoney() {
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~å……å€¼~çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~å……å€¼~çš„è¯·æ±‚");
+		try {
+			int result = jsonObject.getInt("result");
+			Message msg = new Message();
+			msg.arg1 = result;
+			msg.what = Config.REQUEST_MODIFY_MONEY;
+			////BaseActivity.sendMessage(msg);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	
+	//å‘é€ç©å®¶ç§¯åˆ†è¯·æ±‚
 	public void getScore(String name){
-		Log.i(tag, "·¢ËÍ»ñÈ¡Íæ¼Ò»ı·ÖµÄÇëÇó");
+		Log.i(tag, "å‘é€è·å–ç©å®¶ç§¯åˆ†çš„è¯·æ±‚");
 		
 		JSONObject jo = new JSONObject();
 		try {
@@ -647,31 +721,30 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍ»ñÈ¡Íæ¼Ò»ı·ÖµÄÇëÇóÎª£º"+jo.toString());
-		System.out.println("·¢ËÍ»ñÈ¡Íæ¼Ò»ı·ÖµÄÇëÇóÎª£º"+jo.toString());
+		Log.i(tag, "å‘é€è·å–ç©å®¶ç§¯åˆ†çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+		System.out.println("å‘é€è·å–ç©å®¶ç§¯åˆ†çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
 	}
 	
-	
 	public void handGetSocre(){
-		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~Íæ¼Ò»ı·Ö~µÄÇëÇó");
-		System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~Íæ¼Ò»ı·Ö~µÄÇëÇó");
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~ç©å®¶ç§¯åˆ†~çš„è¯·æ±‚");
+		System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~ç©å®¶ç§¯åˆ†~çš„è¯·æ±‚");
 		try {
 			 
 			int score=jsonObject.getInt("score");
 			Message msg = new Message();
 			msg.arg1=score;
 			msg.what=Config.REQUEST_GET_SCORES;
-			BaseActivity.sendMessage(msg);
+			////BaseActivity.sendMessage(msg);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	//·¢ËÍÌí¼Ó»ı·ÖµÄÇëÇó
+	//å‘é€æ·»åŠ ç§¯åˆ†çš„è¯·æ±‚
 	public void addScore(int num){
-		Log.i(tag, "·¢ËÍÌí¼Ó»ı·ÖµÄÇëÇó");
-		System.out.println("·¢ËÍÌí¼Ó»ı·ÖµÄÇëÇó");
+		Log.i(tag, "å‘é€æ·»åŠ ç§¯åˆ†çš„è¯·æ±‚");
+		System.out.println("å‘é€æ·»åŠ ç§¯åˆ†çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("username", Constant.userName);
@@ -683,14 +756,13 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍÌí¼Ó»ı·ÖµÄÇëÇóÎª£º"+jo.toString());
-		System.out.println("·¢ËÍÌí¼Ó»ı·ÖµÄÇëÇóÎª£º"+jo.toString());
+		Log.i(tag, "å‘é€æ·»åŠ ç§¯åˆ†çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+		System.out.println("å‘é€æ·»åŠ ç§¯åˆ†çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
 	}
-	
-	//Ïò·şÎñÆ÷·¢ËÍÌôÕ½»ı·ÖÇëÇó
-	public void addPlayerScore(String playername,int num){
+	//å‘æœåŠ¡å™¨å‘é€æŒ‘æˆ˜ç§¯åˆ†è¯·æ±‚
+		public void addPlayerScore(String playername,int num){
 		
-		System.out.println("·¢ËÍÌôÕ½Ê±Ìí¼Ó»ı·ÖµÄÇëÇó");
+		System.out.println("å‘é€æŒ‘æˆ˜æ—¶æ·»åŠ ç§¯åˆ†çš„è¯·æ±‚");
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put("playername", playername);
@@ -701,52 +773,52 @@ public class NetWorker extends Thread {
 			e.printStackTrace();
 		}
 		out.println(jo.toString());
-		Log.i(tag, "·¢ËÍÌôÕ½Ê±Ìí¼Ó»ı·ÖµÄÇëÇóÎª£º"+jo.toString());
+		Log.i(tag, "å‘é€æŒ‘æˆ˜æ—¶æ·»åŠ ç§¯åˆ†çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+		
 	}
-	
-	//´Ó·şÎñÆ÷·µ»Ø¶ÔÕ½Íæ¼ÒµÄ»ı·Ö
+	//ä»æœåŠ¡å™¨è¿”å›å¯¹æˆ˜ç©å®¶çš„ç§¯åˆ†
     public void handAddPlayerScore(){
 	
-    	System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~¶ÔÕ½Íæ¼Ò»ı·ÖÔö¼Ó~µÄÇëÇó");
-    	try {
-    		int num=jsonObject.getInt("num");
-    		Message msg = new Message();
-    		msg.arg1=num;
-    		msg.what=Config.REQUEST_ADD_PLAYERSCORE;
-    		BaseActivity.sendMessage(msg);
-    	} catch (JSONException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	}
-    }
-    
-    //·¢ËÍpK½á¹û¸ø·şÎñÆ÷£¬ÈÃ·şÎñÆ÷ÅĞ¶ÏË­Ê¤Àû
-    public void sendPKResult(String playername){
-    	Log.i(tag, "·¢ËÍpk½á¹ûµÄÇëÇó");
-	
-    	JSONObject jo = new JSONObject();
-    	try {
-    		jo.put("requestType", Config.REQUEST_PK_RESULT);
-    		jo.put("playername", playername);
-	    } catch (JSONException e) {
+	System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~å¯¹æˆ˜ç©å®¶ç§¯åˆ†å¢åŠ ~çš„è¯·æ±‚");
+	try {
+		 
+		int num=jsonObject.getInt("num");
+		Message msg = new Message();
+		msg.arg1=num;
+		msg.what=Config.REQUEST_ADD_PLAYERSCORE;
+		////BaseActivity.sendMessage(msg);
+	} catch (JSONException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
-	    }
-    	out.println(jo.toString());
-    	System.out.println("·¢ËÍpk½á¹ûµÄÇëÇóÎª£º"+jo.toString());
-    }
+	}
+}
+ //å‘é€pKç»“æœç»™æœåŠ¡å™¨ï¼Œè®©æœåŠ¡å™¨åˆ¤æ–­è°èƒœåˆ©
+    public void sendPKResult(String playername){
+	 Log.i(tag, "å‘é€pkç»“æœçš„è¯·æ±‚");
+	
+	 JSONObject jo = new JSONObject();
+	  try {
+		jo.put("requestType", Config.REQUEST_PK_RESULT);
+		jo.put("playername", playername);
+	    } catch (JSONException e) {
+		// TODO Auto-generated catch block
+		 e.printStackTrace();
+	 }
+	  out.println(jo.toString());
+	System.out.println("å‘é€pkç»“æœçš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+  }
 
-     //·şÎñÆ÷µÄ·µ»Ø½á¹û
-    public void handPKResult(){
+     //æœåŠ¡å™¨çš„è¿”å›ç»“æœ
+      public void handPKResult(){
     	  
-	    System.out.println("´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~pk½á¹û~µÄÇëÇó");
+	    System.out.println("ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~pkç»“æœ~çš„è¯·æ±‚");
 		Message msg = new Message();
 		msg.what=Config.REQUEST_PK_RESULT;
-		BaseActivity.sendMessage(msg);
-    }
+		////BaseActivity.sendMessage(msg);
+      }
       
-    public void exitGameAcitvity(String playername,String username){
-  		Log.i(tag, "·¢ËÍÍË³öÓÎÏ·½çÃæµÄÇëÇó");
+      public void exitGameAcitvity(String playername,String username){
+  		Log.i(tag, "å‘é€é€€å‡ºæ¸¸æˆç•Œé¢çš„è¯·æ±‚");
   		JSONObject jo = new JSONObject();
   		try {
   			jo.put("username", username);
@@ -757,25 +829,98 @@ public class NetWorker extends Thread {
   			e.printStackTrace();
   		}
   		out.println(jo.toString());
-  		System.out.println("·¢ËÍÍË³öÓÎÏ·½çÃæµÄÇëÇóÎª£º"+jo.toString());
+  		System.out.println("å‘é€é€€å‡ºæ¸¸æˆç•Œé¢çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
   	}
       
   	public void handExitGameActivity(){
   		
-  		Log.i(tag, "´«µİ´Ó·şÎñÆ÷¶Ë·µ»ØµÄ~~ÍË³öÓÎÏ·½çÃæ");
+  		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~~é€€å‡ºæ¸¸æˆç•Œé¢");
   		Message msg = new Message();
   		try {
   			msg.obj = jsonObject.getString("username");
   			msg.what=Config.REQUEST_EXIT_GAME;
-  			BaseActivity.sendMessage(msg);
+  			////BaseActivity.sendMessage(msg);
   		} catch (JSONException e) {
   			// TODO Auto-generated catch block
   			e.printStackTrace();
   		}
   	}
-  	
 	public void setOnWork(Boolean onWork) {
 		this.onWork = onWork;
 	}
+
+	public void deletefriend(String string) {
+		// TODO Auto-generated method stub
+		System.out.println("å‘é€åˆ é™¤å¥½å‹çš„è¯·æ±‚");
+		JSONObject jo = new JSONObject();
+		try {
+			/*jo.put("selfName", Constant.userName);
+			jo.put("friendName", friendname);
+			jo.put("requestType", Config.REQUEST_ADD_FRIEND);*/
+			jo.put("username", Constant.userName);
+			jo.put("playername", string);
+			jo.put(Config.REQUEST_TYPE, Config.REQUEST_DEL_FRIEND);
+			out.println(jo.toString());
+			System.out.println("åˆ é™¤å¥½å‹çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//out.println(jo.toString());
+		Log.i(tag, "å‘é€åˆ é™¤å¥½å‹çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+		System.out.println("å‘é€åˆ é™¤å¥½å‹çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+	}
+	private void handDeleteFriend() {
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~åˆ é™¤å¥½å‹åˆ—è¡¨~çš„è¯·æ±‚");
+		
+		Message msg = new Message();
+		try {
+			msg.arg1=jsonObject.getInt("result");
+			msg.what=Config.REQUEST_DEL_FRIEND;
+			////BaseActivity.sendMessage(msg);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void modifyinfo(String newnameStr, String newpsd) {
+		// TODO Auto-generated method stub
+		System.out.println("å‘é€ä¿®æ”¹ç”¨æˆ·åå¯†ç çš„è¯·æ±‚");
+		JSONObject jo = new JSONObject();
+		try {
+			jo.put("username", Constant.userName);
+			jo.put("newname", newnameStr);
+			jo.put("newpsd", newpsd);
+			jo.put(Config.REQUEST_TYPE, Config.REQUEST_MODIFY_INFO);
+			out.println(jo.toString());
+			System.out.println("åˆ é™¤ä¿®æ”¹ç”¨æˆ·åå¯†ç è¯·æ±‚ä¸ºï¼š"+jo.toString());
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.i(tag, "å‘é€ä¿®æ”¹ç”¨æˆ·åå¯†ç çš„è¯·æ±‚ä¸ºï¼š"+jo.toString());
+	}
+
+
+	private void handModifyInfo() {
+		Log.i(tag, "ä¼ é€’ä»æœåŠ¡å™¨ç«¯è¿”å›çš„~ä¿®æ”¹ç”¨æˆ·åå¯†ç ~çš„è¯·æ±‚");
+		
+		Message msg = new Message();
+		try {
+			Constant.userName = jsonObject.getString("username");
+			msg.arg1=jsonObject.getInt("result");
+			msg.what= Config.REQUEST_MODIFY_INFO;
+			////BaseActivity.sendMessage(msg);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+
 	
 }
+
